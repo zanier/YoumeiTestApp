@@ -1,0 +1,6 @@
+framework module Pods_YoumeiTestApp {
+  umbrella header "Pods-YoumeiTestApp-umbrella.h"
+
+  export *
+  module * { export * }
+}
