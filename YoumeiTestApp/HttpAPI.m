@@ -20,7 +20,20 @@ static NSString *const YoumeiURLString = @"https://3evjrl4n5d.execute-api.us-wes
                 failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
 {
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    [manager POST:YoumeiURLString parameters:[item modelToJSONObject] constructingBodyWithBlock:nil progress:nil success:success failure:failure];
+    NSMutableURLRequest *request = [manager.requestSerializer requestWithMethod:@"POST" URLString:YoumeiURLString parameters:nil error:nil];
+    [request setHTTPBody:[item modelToJSONData]];
+    NSURLSessionDataTask *task = [manager.session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error) {
+            if (failure) {
+                failure(task, error);
+            }
+        } else {
+            if (success) {
+                success(task, response.URL.absoluteString);
+            }
+        }
+    }];
+    [task resume];
 }
 
 + (void)getMessageListWithId:(NSString *)idStr

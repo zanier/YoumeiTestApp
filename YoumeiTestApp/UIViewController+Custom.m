@@ -32,8 +32,28 @@
     return window;
 }
 
+- (void)hideCenterToast {
+    if ([NSThread isMainThread]) {
+        [self.superWindow hideToast];
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.superWindow hideToast];
+        });
+    }
+}
+
 - (void)showCenterToast:(NSString *)text {
-    [self.superWindow makeToast:text duration:[CSToastManager defaultDuration] position:CSToastPositionCenter style:nil];
+    [self showCenterToast:text duration:[CSToastManager defaultDuration]];
+}
+
+- (void)showCenterToast:(NSString *)text duration:(NSTimeInterval)duration {
+    if ([NSThread isMainThread]) {
+        [self.superWindow makeToast:text duration:duration position:CSToastPositionCenter style:nil];
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.superWindow makeToast:text duration:duration position:CSToastPositionCenter style:nil];
+        });
+    }
 }
 
 /**

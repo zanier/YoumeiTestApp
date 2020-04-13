@@ -15,7 +15,11 @@
 */
 - (UIWindow *)superWindow;
 
+- (void)hideCenterToast;
+
 - (void)showCenterToast:(NSString *)text;
+
+- (void)showCenterToast:(NSString *)text duration:(NSTimeInterval)duration;
 
 /**
  弹出警告视图（两键）

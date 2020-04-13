@@ -57,7 +57,7 @@
 
 - (void)didSelectType:(NSInteger)type {
     _item.type = @(type);
-    self.typeLabel.text = [NSString stringWithFormat:@"%li", (long)_item.type];
+    self.typeLabel.text = [NSString stringWithFormat:@"%@", _item.type];
 }
 
 - (void)finishAction:(UIBarButtonItem *)buttonItem {
@@ -72,10 +72,15 @@
 }
 
 - (void)uploadItem {
+    [self showCenterToast:@"正在上传..." duration:100000];
     [HttpAPI postMessageItem:_item succes:^(NSURLSessionDataTask * _Nonnull task, NSString * _Nonnull responseURL) {
-        [self showCenterToast:@"创建成功!"];
-        [self.navigationController popViewControllerAnimated:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self hideCenterToast];
+            [self showCenterToast:@"创建成功!"];
+            [self.navigationController popViewControllerAnimated:YES];
+        });
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        [self hideCenterToast];
         [self showCenterToast:[NSString stringWithFormat:@"创建失败! %@", error]];
     }];
 }
